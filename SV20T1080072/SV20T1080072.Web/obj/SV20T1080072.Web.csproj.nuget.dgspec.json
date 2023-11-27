@@ -1,0 +1,272 @@
+{
+  "format": 1,
+  "restore": {
+    "D:\\LapTrinhWeb\\SV20T1080072\\SV20T1080072.Web\\SV20T1080072.Web.csproj": {}
+  },
+  "projects": {
+    "D:\\LapTrinhWeb\\SV20T1080072\\SV20T1080072.BusinessLayers\\SV20T1080072.BusinessLayers.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\LapTrinhWeb\\SV20T1080072\\SV20T1080072.BusinessLayers\\SV20T1080072.BusinessLayers.csproj",
+        "projectName": "SV20T1080072.BusinessLayers",
+        "projectPath": "D:\\LapTrinhWeb\\SV20T1080072\\SV20T1080072.BusinessLayers\\SV20T1080072.BusinessLayers.csproj",
+        "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
+        "outputPath": "D:\\LapTrinhWeb\\SV20T1080072\\SV20T1080072.BusinessLayers\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {
+              "D:\\LapTrinhWeb\\SV20T1080072\\SV20T1080072.DataLayers\\SV20T1080072.DataLayers.csproj": {
+                "projectPath": "D:\\LapTrinhWeb\\SV20T1080072\\SV20T1080072.DataLayers\\SV20T1080072.DataLayers.csproj"
+              },
+              "D:\\LapTrinhWeb\\SV20T1080072\\SV20T1080072.DomainModels\\SV20T1080072.DomainModels.csproj": {
+                "projectPath": "D:\\LapTrinhWeb\\SV20T1080072\\SV20T1080072.DomainModels\\SV20T1080072.DomainModels.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.400\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "D:\\LapTrinhWeb\\SV20T1080072\\SV20T1080072.DataLayers\\SV20T1080072.DataLayers.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\LapTrinhWeb\\SV20T1080072\\SV20T1080072.DataLayers\\SV20T1080072.DataLayers.csproj",
+        "projectName": "SV20T1080072.DataLayers",
+        "projectPath": "D:\\LapTrinhWeb\\SV20T1080072\\SV20T1080072.DataLayers\\SV20T1080072.DataLayers.csproj",
+        "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
+        "outputPath": "D:\\LapTrinhWeb\\SV20T1080072\\SV20T1080072.DataLayers\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {
+              "D:\\LapTrinhWeb\\SV20T1080072\\SV20T1080072.DomainModels\\SV20T1080072.DomainModels.csproj": {
+                "projectPath": "D:\\LapTrinhWeb\\SV20T1080072\\SV20T1080072.DomainModels\\SV20T1080072.DomainModels.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "dependencies": {
+            "Dapper": {
+              "target": "Package",
+              "version": "[2.1.15, )"
+            },
+            "Microsoft.Data.SqlClient": {
+              "target": "Package",
+              "version": "[5.1.1, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.400\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "D:\\LapTrinhWeb\\SV20T1080072\\SV20T1080072.DomainModels\\SV20T1080072.DomainModels.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\LapTrinhWeb\\SV20T1080072\\SV20T1080072.DomainModels\\SV20T1080072.DomainModels.csproj",
+        "projectName": "SV20T1080072.DomainModels",
+        "projectPath": "D:\\LapTrinhWeb\\SV20T1080072\\SV20T1080072.DomainModels\\SV20T1080072.DomainModels.csproj",
+        "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
+        "outputPath": "D:\\LapTrinhWeb\\SV20T1080072\\SV20T1080072.DomainModels\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.400\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "D:\\LapTrinhWeb\\SV20T1080072\\SV20T1080072.Web\\SV20T1080072.Web.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\LapTrinhWeb\\SV20T1080072\\SV20T1080072.Web\\SV20T1080072.Web.csproj",
+        "projectName": "SV20T1080072.Web",
+        "projectPath": "D:\\LapTrinhWeb\\SV20T1080072\\SV20T1080072.Web\\SV20T1080072.Web.csproj",
+        "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
+        "outputPath": "D:\\LapTrinhWeb\\SV20T1080072\\SV20T1080072.Web\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {
+              "D:\\LapTrinhWeb\\SV20T1080072\\SV20T1080072.BusinessLayers\\SV20T1080072.BusinessLayers.csproj": {
+                "projectPath": "D:\\LapTrinhWeb\\SV20T1080072\\SV20T1080072.BusinessLayers\\SV20T1080072.BusinessLayers.csproj"
+              },
+              "D:\\LapTrinhWeb\\SV20T1080072\\SV20T1080072.DataLayers\\SV20T1080072.DataLayers.csproj": {
+                "projectPath": "D:\\LapTrinhWeb\\SV20T1080072\\SV20T1080072.DataLayers\\SV20T1080072.DataLayers.csproj"
+              },
+              "D:\\LapTrinhWeb\\SV20T1080072\\SV20T1080072.DomainModels\\SV20T1080072.DomainModels.csproj": {
+                "projectPath": "D:\\LapTrinhWeb\\SV20T1080072\\SV20T1080072.DomainModels\\SV20T1080072.DomainModels.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "dependencies": {
+            "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
+              "target": "Package",
+              "version": "[6.0.16, )"
+            },
+            "PagedList.Mvc": {
+              "target": "Package",
+              "version": "[4.5.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.400\\RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
