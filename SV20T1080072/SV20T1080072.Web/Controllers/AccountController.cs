@@ -66,16 +66,16 @@ namespace SV20T1080072.Web.Controllers
 		}
 
         [Authorize]
-        [HttpGet]
+        [HttpPost]
         public IActionResult ChangePassword(string oldPassword, string newPassword, string confirmPassword)
 		{
 			string userName = User?.GetUserData()?.UserName ?? "";
 
-			//Kiem tra mat khau cu da nhap dung chua?
+			//Kiem tra mat khau cu
 			var userAccount = UserAccountService.Authorize(userName, oldPassword, TypeOfAccounts.Employee);
 			if (userAccount == null)
 				ModelState.AddModelError("Error", "Mật khẩu cũ không đúng");
-			//Kiem tra xac nhan mat khau co hop le khong?
+			//Kiem tra xac nhan mat khau hop le
 			if (confirmPassword != newPassword)
 				ModelState.AddModelError("Error", "Xác nhận mật khẩu không hợp lệ");
 
