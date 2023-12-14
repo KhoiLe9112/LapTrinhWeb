@@ -1,13 +1,10 @@
-﻿using SV20T1080072.DomainModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Dapper;
+using SV20T1080072.DomainModels;
+using System.Data;
 
 namespace SV20T1080072.DataLayers.SQLServer
 {
-    internal class CustomerUserAccountDAL : _BaseDAL, IUserAccountDAL
+    public class CustomerUserAccountDAL : _BaseDAL, IUserAccountDAL
     {
         public CustomerUserAccountDAL(string connectionString) : base(connectionString)
         {
@@ -15,12 +12,38 @@ namespace SV20T1080072.DataLayers.SQLServer
 
         public UserAccount? Authorize(string userName, string password)
         {
-            throw new NotImplementedException();
+            UserAccount? data = null;
+            using (var connection = OpenConnection())
+            {
+                var sql = @"select CustomerID as UserID, Email as UserName, CustomerName as FullName, Email 
+                            from Customers 
+                            where Email = @userName and Password = @password";
+                var parameters = new
+                {
+                    userName = userName,
+                    password = password
+                };
+                data = connection.QueryFirstOrDefault<UserAccount>(sql: sql, param: parameters, commandType: CommandType.Text);
+                connection.Close();
+            }
+            return data;
         }
 
         public bool ChangePassword(string userName, string password)
         {
-            throw new NotImplementedException();
+            bool result = false;
+            using (var connection = OpenConnection())
+            {
+                var sql = @"update Customers set Password = @password where Email = @userName";
+                var parameter = new
+                {
+                    userName = userName,
+                    password = password
+                };
+                result = connection.Execute(sql: sql, param: parameter, commandType: CommandType.Text) > 0;
+                connection.Close();
+            }
+            return result;
         }
     }
 }

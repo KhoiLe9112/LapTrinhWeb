@@ -12,28 +12,57 @@ namespace SV20T1080072.Web.Areas.Admin.Controllers
 	[Area("Admin")]
 	public class CustomerController : Controller
 	{
+		private const string CUSTOMER_SEARCH = "Customer_Search";
 		private const int PAGE_SIZE = 10;
-		public IActionResult Index(int page = 1, string searchValue = "")
-		{
-			//var model = CommonDataService.ListOfCustomers(out int rowCount, page, 10, searchValue);
-			//ViewBag.Page = page;
-			//ViewBag.RowCount = rowCount;
-			//ViewBag.TotalPage = (int)@Math.Ceiling((double)ViewBag.RowCount / 10);
-			//return View(model);
+		//public IActionResult Index(int page = 1, string searchValue = "")
+		//{
+		//	int rowCount = 0;
+		//	var data = CommonDataService.ListOfCustomers(out rowCount, page, PAGE_SIZE, searchValue ?? "");
+		//	var model = new PaginationSearchCustomer()
+		//	{
+		//		Page = page,
+		//		PageSize = PAGE_SIZE,
+		//		SearchValue = searchValue ?? "",
+		//		RowCount = rowCount,
+		//		Data = data
+		//	};
 
+		//	string? errorMessage = Convert.ToString(TempData["ErrorMessage"]);
+		//	ViewBag.ErrorMessage = errorMessage;
+
+		//	return View(model);
+		//}
+
+		public IActionResult Index()
+		{
+			var input = ApplicationContext.GetSessionData<PaginationSearchInput>(CUSTOMER_SEARCH);
+			if (input == null)
+			{
+				input = new PaginationSearchInput()
+				{
+					Page = 1,
+					PageSize = PAGE_SIZE,
+					SearchValue = ""
+				};
+			}
+			return View(input);
+		}
+
+		public IActionResult Search(PaginationSearchInput input)
+		{
 			int rowCount = 0;
-			var data = CommonDataService.ListOfCustomers(out rowCount, page, PAGE_SIZE, searchValue ?? "");
+			var data = CommonDataService.ListOfCustomers(out rowCount, input.Page, input.PageSize, input.SearchValue ?? "");
 			var model = new PaginationSearchCustomer()
 			{
-				Page = page,
-				PageSize = PAGE_SIZE,
-				SearchValue = searchValue ?? "",
+				Page = input.Page,
+				PageSize = input.PageSize,
+				SearchValue = input.SearchValue ?? "",
 				RowCount = rowCount,
 				Data = data
 			};
 
-			string? errorMessage = Convert.ToString(TempData["ErrorMessage"]);
-			ViewBag.ErrorMessage = errorMessage;
+			//Lưu lại điều kiện tìm kiếm
+			ApplicationContext.SetSessionData(CUSTOMER_SEARCH, input);
 
 			return View(model);
 		}
@@ -82,7 +111,7 @@ namespace SV20T1080072.Web.Areas.Admin.Controllers
 				ModelState.AddModelError(nameof(data.CustomerName), "Tên khách hàng không được rỗng");
 			else if (CheckString.ContainsNumber(data.CustomerName) == true || CheckString.ContainsSpecial(data.CustomerName) == true)
 				ModelState.AddModelError(nameof(data.CustomerName), "Tên khách hàng không hợp lệ");
-			
+
 			if (string.IsNullOrWhiteSpace(data.ContactName))
 				ModelState.AddModelError(nameof(data.ContactName), "Tên liên lạc không được rỗng");
 			else if (CheckString.ContainsSpecial(data.ContactName) == true)
@@ -113,7 +142,8 @@ namespace SV20T1080072.Web.Areas.Admin.Controllers
 				return View("Create", data);
 			}
 
-			if (data.CustomerID == 0) {
+			if (data.CustomerID == 0)
+			{
 				int customerId = CommonDataService.AddCustomer(data);
 				if (customerId > 0)
 				{

@@ -5,6 +5,10 @@
       "PackagePath": "staticwebassets\\SV20T1080072.Web.bundle.scp.css"
     },
     {
+      "Id": "D:\\LapTrinhWeb\\SV20T1080072\\SV20T1080072.Web\\wwwroot\\Images\\Avatars\\default_avatar.png",
+      "PackagePath": "staticwebassets\\Images\\Avatars\\default_avatar.png"
+    },
+    {
       "Id": "D:\\LapTrinhWeb\\SV20T1080072\\SV20T1080072.Web\\wwwroot\\Images\\Avatars\\pikachu.jpg",
       "PackagePath": "staticwebassets\\Images\\Avatars\\pikachu.jpg"
     },
@@ -15,6 +19,18 @@
     {
       "Id": "D:\\LapTrinhWeb\\SV20T1080072\\SV20T1080072.Web\\wwwroot\\Images\\Employees\\638366658630508288_niggachu.jpg",
       "PackagePath": "staticwebassets\\Images\\Employees\\638366658630508288_niggachu.jpg"
+    },
+    {
+      "Id": "D:\\LapTrinhWeb\\SV20T1080072\\SV20T1080072.Web\\wwwroot\\Images\\Employees\\638372695839450404_pikachu.jpg",
+      "PackagePath": "staticwebassets\\Images\\Employees\\638372695839450404_pikachu.jpg"
+    },
+    {
+      "Id": "D:\\LapTrinhWeb\\SV20T1080072\\SV20T1080072.Web\\wwwroot\\Images\\Employees\\638372701700223013_niggachu.jpg",
+      "PackagePath": "staticwebassets\\Images\\Employees\\638372701700223013_niggachu.jpg"
+    },
+    {
+      "Id": "D:\\LapTrinhWeb\\SV20T1080072\\SV20T1080072.Web\\wwwroot\\Images\\Employees\\638374887847429636_pikachu.jpg",
+      "PackagePath": "staticwebassets\\Images\\Employees\\638374887847429636_pikachu.jpg"
     },
     {
       "Id": "D:\\LapTrinhWeb\\SV20T1080072\\SV20T1080072.Web\\wwwroot\\Images\\Products\\Samsung.jpg",

@@ -21,18 +21,19 @@ namespace SV20T1080072.Web.Controllers
 			ViewBag.UserName = userName;
 			ViewBag.PassWord = password;
 
-			var userAccount = UserAccountService.Authorize(userName, password, TypeOfAccounts.Employee);
+			var adminAccount = UserAccountService.Authorize(userName, password, TypeOfAccounts.Employee);
+			var userAccount = UserAccountService.Authorize(userName, password, TypeOfAccounts.Customer);
 
-			if (userAccount != null)
+			if (adminAccount != null)
 			{
 				//Dang nhap thanh cong
 				//1. Tao doi tuong luu cac thong tin cua phien dang nhap
 				WebUserData userData = new WebUserData() {
-					UserId = userAccount.UserId,
-					UserName = userAccount.UserName,
-					DisplayName = userAccount.FullName,
-					Email = userAccount.Email,
-					Photo = userAccount.Photo,
+					UserId = adminAccount.UserId,
+					UserName = adminAccount.UserName,
+					DisplayName = adminAccount.FullName,
+					Email = adminAccount.Email,
+					Photo = adminAccount.Photo,
 					ClientIP = HttpContext.Connection.RemoteIpAddress?.ToString(),
 					SessionId = HttpContext.Session.Id,
 					AdditionalData = "",
@@ -42,6 +43,27 @@ namespace SV20T1080072.Web.Controllers
 				await HttpContext.SignInAsync(userData.CreatePrincipal()); //Authentication
 				//3. Quay lai trang chu cua Admin
 				return RedirectToAction("Index", "Dashboard", new { area = "Admin"});
+			}
+			else if (userAccount != null)
+			{
+				//Dang nhap thanh cong
+				//1. Tao doi tuong luu cac thong tin cua phien dang nhap
+				WebUserData userData = new WebUserData()
+				{
+					UserId = userAccount.UserId,
+					UserName = userAccount.UserName,
+					DisplayName = userAccount.FullName,
+					Email = userAccount.Email,
+					Photo = userAccount.Photo,
+					ClientIP = HttpContext.Connection.RemoteIpAddress?.ToString(),
+					SessionId = HttpContext.Session.Id,
+					AdditionalData = "",
+					Roles = new List<string>() { WebUserRoles.Member }
+				};
+				//2.Thiet lap (ghi nhan) phien dang nhap
+				await HttpContext.SignInAsync(userData.CreatePrincipal()); //Authentication
+				//3. Quay lai trang chu cua User
+				return RedirectToAction("Index", "Home");
 			}
 			else
 			{

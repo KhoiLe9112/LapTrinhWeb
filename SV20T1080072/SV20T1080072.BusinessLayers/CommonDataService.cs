@@ -16,7 +16,7 @@ namespace SV20T1080072.BusinessLayers
 		private static readonly ICommonDAL<Employee> employeeDB;
         private static readonly ICommonDAL<Shipper> shipperDB;
         private static readonly ICommonDAL<Supplier> supplierDB;
-		private static readonly ICommonDAL<Product> productDB;
+		//private static readonly ICommonDAL<Product> productDB;
 		private static readonly ICommonDAL<Province> provinceDB;
 
 		/// <summary>
@@ -30,7 +30,7 @@ namespace SV20T1080072.BusinessLayers
 			employeeDB = new DataLayers.SQLServer.EmployeeDAL(connectionString);
             shipperDB = new DataLayers.SQLServer.ShipperDAL(connectionString);
 			supplierDB = new DataLayers.SQLServer.SupplierDAL(connectionString);
-			productDB = new DataLayers.SQLServer.ProductDAL(connectionString);
+			//productDB = new DataLayers.SQLServer.ProductDAL(connectionString);
 			provinceDB = new DataLayers.SQLServer.ProvinceDAL(connectionString);
 		}
 
@@ -295,16 +295,28 @@ namespace SV20T1080072.BusinessLayers
 		}
 
 
-		public static List<Product> ListOfProducts(out int rowCount, int page = 1, int pageSize = 0, string searchValue = "")
-		{
-			rowCount = productDB.Count(searchValue);
-			return productDB.List(page, pageSize, searchValue).ToList();
-		}
+		//public static List<Product> ListOfProducts(out int rowCount, int page = 1, int pageSize = 0, string searchValue = "")
+		//{
+		//	rowCount = productDB.Count(searchValue);
+		//	return productDB.List(page, pageSize, searchValue).ToList();
+		//}
 
 		public static List<Province> ListOfProvinces()
 		{
 			//rowCount = productDB.Count();
 			return provinceDB.List().ToList();
 		}
-	}
+
+        public static List<Category> ListOfCategoryNames()
+        {
+            //rowCount = productDB.Count();
+            return categoryDB.List().ToList();
+        }
+
+        public static List<Supplier> ListOfSupplierNames()
+        {
+            //rowCount = productDB.Count();
+            return supplierDB.List().ToList();
+        }
+    }
 }

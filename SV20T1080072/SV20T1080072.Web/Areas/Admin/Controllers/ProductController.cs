@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis;
+using SV20T1080072.BusinessLayer;
 using SV20T1080072.BusinessLayers;
+using SV20T1080072.Web.Models;
 
 namespace SV20T1080072.Web.Areas.Admin.Controllers
 {
@@ -12,20 +14,49 @@ namespace SV20T1080072.Web.Areas.Admin.Controllers
     [Area("Admin")]
 	public class ProductController : Controller
 	{
+		private const string PRODUCT_SEARCH = "Product_Search";
+		private const int PAGE_SIZE = 10;
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <returns></returns>
-		public IActionResult Index(int page = 1, string searchValue = "")
+		public IActionResult Index()
 		{
-			
-			var model = CommonDataService.ListOfProducts(out int rowCount, page, 5, searchValue);
-            ViewBag.Page = page;
-            ViewBag.RowCount = rowCount;
-			ViewBag.TotalPage = (int)@Math.Ceiling((double)ViewBag.RowCount / 10);
 
-            return View(model);
+			var input = ApplicationContext.GetSessionData<PaginationSearchInput>(PRODUCT_SEARCH);
+			if (input == null)
+			{
+				input = new PaginationSearchInput()
+				{
+					Page = 1,
+					PageSize = PAGE_SIZE,
+					SearchValue = "",
+					Categories = new List<DomainModels.Category>(),
+					Suppliers = new List<DomainModels.Supplier>()
+				};
+			}
+			return View(input);
 		}
+
+		public IActionResult Search(PaginationSearchInput input)
+		{
+			int rowCount = 0;
+			var data = ProductDataService.ListProducts(input.SearchValue ?? "");
+			var model = new PaginationSearchProduct()
+			{
+				Page = input.Page,
+				PageSize = input.PageSize,
+				SearchValue = input.SearchValue ?? "",
+				RowCount = rowCount,
+				Data = data
+			};
+
+			//Lưu lại điều kiện tìm kiếm
+			ApplicationContext.SetSessionData(PRODUCT_SEARCH, input);
+
+			return View(model);
+		}
+
 		/// <summary>
 		/// 
 		/// </summary>
