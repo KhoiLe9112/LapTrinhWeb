@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis;
 using SV20T1080072.BusinessLayer;
 using SV20T1080072.BusinessLayers;
+using SV20T1080072.DomainModels;
 using SV20T1080072.Web.Models;
+using System.Drawing.Printing;
 
 namespace SV20T1080072.Web.Areas.Admin.Controllers
 {
@@ -15,7 +17,7 @@ namespace SV20T1080072.Web.Areas.Admin.Controllers
 	public class ProductController : Controller
 	{
 		private const string PRODUCT_SEARCH = "Product_Search";
-		private const int PAGE_SIZE = 10;
+		private const int PAGE_SIZE = 5;
 		/// <summary>
 		/// 
 		/// </summary>
@@ -31,28 +33,37 @@ namespace SV20T1080072.Web.Areas.Admin.Controllers
 					Page = 1,
 					PageSize = PAGE_SIZE,
 					SearchValue = "",
-					Categories = new List<DomainModels.Category>(),
-					Suppliers = new List<DomainModels.Supplier>()
+					CategoryID = 0,
+					SupplierID = 0,
 				};
 			}
 			return View(input);
 		}
 
 		public IActionResult Search(PaginationSearchInput input)
-		{
-			int rowCount = 0;
-			var data = ProductDataService.ListProducts(input.SearchValue ?? "");
-			var model = new PaginationSearchProduct()
-			{
-				Page = input.Page,
-				PageSize = input.PageSize,
-				SearchValue = input.SearchValue ?? "",
-				RowCount = rowCount,
-				Data = data
+        {
+            int rowCount = 0;
+            var data = ProductDataService.ListProducts(input.Page, input.PageSize, input.SearchValue ?? "", input.CategoryID, input.SupplierID, 0, 0, out rowCount);
+            var model = new PaginationSearchProduct()
+            {
+                Page = input.Page,
+                PageSize = input.PageSize,
+                SearchValue = input.SearchValue ?? "",
+                RowCount = rowCount,
+                Data = data,
+				categoryID = input.CategoryID,
+				supplierID = input.SupplierID
 			};
 
-			//Lưu lại điều kiện tìm kiếm
+            //Lưu lại điều kiện tìm kiếm
 			ApplicationContext.SetSessionData(PRODUCT_SEARCH, input);
+
+			string errorMessage = Convert.ToString(TempData["ErrorMessage"]);
+			ViewBag.ErrorMessage = errorMessage;
+			string deletedMessage = Convert.ToString(TempData["DeletedMessage"]);
+			ViewBag.DeletedMessage = deletedMessage;
+			string savedMessage = Convert.ToString(TempData["SavedMessage"]);
+			ViewBag.SavedMessage = savedMessage;
 
 			return View(model);
 		}
@@ -63,8 +74,12 @@ namespace SV20T1080072.Web.Areas.Admin.Controllers
 		/// <returns></returns>
 		public IActionResult Create()
 		{
-			ViewBag.Title = "Bổ sung mặt hàng";
-			return View();
+            ViewBag.Title = "Bổ sung mặt hàng";
+            var data = new Product()
+            {
+                ProductId = 0
+            };
+            return View(data);
 		}
 		/// <summary>
 		/// 
@@ -73,9 +88,14 @@ namespace SV20T1080072.Web.Areas.Admin.Controllers
 		/// <returns></returns>
 		public IActionResult Edit(int id = 0)
 		{
-			ViewBag.Title = "Cập nhật mặt hàng";
-			return View("Create");
-		}
+            var model = ProductDataService.GetProduct(id);
+            if (model == null)
+            {
+                return RedirectToAction("Index");
+            }
+            ViewBag.Title = "Cập nhật mặt hàng";
+            return View("Create", model);
+        }
 		/// <summary>
 		/// 
 		/// </summary>
@@ -133,5 +153,72 @@ namespace SV20T1080072.Web.Areas.Admin.Controllers
 					return RedirectToAction("Index");
 			}
 		}
-	}
+
+        public IActionResult Save(Product data, IFormFile? uploadPhoto)
+        {
+            ViewBag.Title = data.ProductId == 0 ? "Bổ sung mặt hàng" : "Cập nhật mặt hàng";
+
+            if (string.IsNullOrWhiteSpace(data.ProductName))
+                ModelState.AddModelError(nameof(data.ProductName), "Tên mặt hàng không được rỗng!");
+            if (data.CategoryId == 0)
+                ModelState.AddModelError(nameof(data.CategoryId), "Vui lòng chọn loại hàng!");
+            if (data.SupplierId == 0)
+                ModelState.AddModelError(nameof(data.SupplierId), "Vui lòng chọn nhà cung cấp!");
+            if (string.IsNullOrWhiteSpace(data.Unit))
+                ModelState.AddModelError(nameof(data.Unit), "Đơn vị tính không được rỗng!");
+            if (data.Price == 0)
+                ModelState.AddModelError(nameof(data.Price), "Vui lòng nhập giá sản phẩm!");
+
+            //Xử lý với ảnh
+            //Upload ảnh lên (nếu có), sau khi upload xong thì mới lấy tên file ảnh vừa upload
+            //để gán cho trường Photo của Employee
+            if (uploadPhoto != null)
+            {
+                string fileName = $"{uploadPhoto.FileName}";
+                string filePath = System.IO.Path.Combine(ApplicationContext.HostEnviroment.WebRootPath, @"images\Products", fileName);
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    uploadPhoto.CopyTo(stream);
+                }
+                data.Photo = fileName;
+            }
+
+            //Kiểm tra đầu vào của model
+
+            if (!ModelState.IsValid)
+            {
+                return View("Create", data);
+            }
+
+            if (data.ProductId == 0)
+            {
+                int productId = ProductDataService.AddProduct(data);
+                if (productId > 0)
+                {
+                    TempData["SavedMessage"] = "Bổ sung mặt hàng thành công";
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    ViewBag.ErrorMessage = "Không bổ sung được dữ liệu!";
+                    return View("Create", data);
+                }
+            }
+            else
+            {
+                bool editSuccess = ProductDataService.UpdateProduct(data);
+                if (editSuccess)
+                {
+                    TempData["SavedMessage"] = "Cập nhật thông tin mặt hàng thành công!";
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    ViewBag.ErrorMessage = "Không cập nhật được thông tin mặt hàng!";
+                    return View("Edit", data);
+                }
+            }
+        }
+
+    }
 }

@@ -1,9 +1,11 @@
-﻿@{
+﻿﻿@using SV20T1080072.Web;
+@using SV20T1080072.Web.AppCodes;
+@model SV20T1080072.DomainModels.Product
+@{
     ViewBag.Title = "Bổ sung mặt hàng";
 }
 
 <div class="box box-primary">
-
     <div class="box-header with-border ">
         <h3 class="box-title">Thông tin mặt hàng</h3>
         <div class="box-tools pull-right">
@@ -14,62 +16,65 @@
     </div>
 
     <div class="box-body">
-        <form class="form-horizontal" action="#" method="post">
-
+        @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+        {
+            <div class="alert alert-warning">
+                <p>@ViewBag.ErrorMessage</p>
+            </div>
+        }
+        <form class="form-horizontal" action="~/Admin/Product/Save" method="post" enctype="multipart/form-data">
+            @Html.HiddenFor(m => m.ProductId)
             <div class="form-group">
                 <label class="control-label col-sm-2">Tên mặt hàng:</label>
                 <div class="col-sm-10">
-                    <input type="text" class="form-control" autofocus>
+                    @Html.ValidationMessageFor(m => m.ProductName,"", new {@style="color:#f00"})
+                    @Html.TextBoxFor(m => m.ProductName, new { @class="form-control" })
                 </div>
             </div>
 
             <div class="form-group">
                 <label class="control-label col-sm-2">Mô tả:</label>
                 <div class="col-sm-10">
-                    <textarea class="form-control" rows="3"></textarea>
+                    @Html.TextAreaFor(m => m.ProductDescription, new { @class="form-control" })
                 </div>
             </div>
 
             <div class="form-group">
                 <label class="control-label col-sm-2">Loại hàng:</label>
                 <div class="col-sm-10">
-                    <select class="form-control">
-                        <option>-- Loại hàng --</option>
-                        <option>Mỹ phẩm</option>
-                        <option>Thực phẩm</option>
-                    </select>
+                    @Html.ValidationMessageFor(m => m.CategoryId,"", new {@style="color:#f00"})
+                    @Html.DropDownListFor(m => m.CategoryId, SelectListHelper.Categories(), new { @class="form-control"})
                 </div>
             </div>
 
             <div class="form-group">
                 <label class="control-label col-sm-2">Nhà cung cấp:</label>
                 <div class="col-sm-10">
-                    <select class="form-control">
-                        <option>-- Nhà cung cấp --</option>
-                        <option>Công ty TNHH Thành Công</option>
-                        <option>Vina Foods</option>
-                    </select>
+                    @Html.ValidationMessageFor(m => m.SupplierId,"", new {@style="color:#f00"})
+                    @Html.DropDownListFor(m => m.SupplierId, SelectListHelper.Suppliers(), new { @class="form-control"})
                 </div>
             </div>
 
             <div class="form-group">
                 <label class="control-label col-sm-2">Đơn vị tính:</label>
                 <div class="col-sm-10">
-                    <input type="text" class="form-control" autofocus>
+                    @Html.ValidationMessageFor(m => m.Unit,"", new {@style="color:#f00"})
+                    @Html.TextBoxFor(m => m.Unit, new { @class="form-control" })
                 </div>
             </div>
 
             <div class="form-group">
                 <label class="control-label col-sm-2">Giá hàng:</label>
                 <div class="col-sm-10">
-                    <input type="text" class="form-control">
+                    @Html.ValidationMessageFor(m => m.Price,"", new {@style="color:#f00"})
+                    @Html.TextBoxFor(m => m.Price, new { @class="form-control" , type = "number"})
                 </div>
             </div>
 
             <div class="form-group">
                 <div class="col-lg-offset-2 col-sm-10">
                     <div class="checkbox">
-                        <label><input type="checkbox" value="" checked>Hiện đang được bán</label>
+                        <label>@Html.CheckBoxFor(m => m.IsSelling)Hiện đang được bán</label>
                     </div>
                 </div>
             </div>
@@ -77,13 +82,15 @@
             <div class="form-group">
                 <label class="control-label col-sm-2">Ảnh minh họa:</label>
                 <div class="col-sm-10">
-                    <input type="file" class="form-control" />
+                    @Html.HiddenFor(m => m.Photo)
+                    <input type="file" class="form-control" name="uploadPhoto" accept="image/*"
+                           onchange="document.getElementById('photo').src = window.URL.createObjectURL(this.files[0])" />
                 </div>
             </div>
 
             <div class="form-group">
                 <div class="col-lg-offset-2 col-sm-10">
-                    <img src="~/images/products/samsung.jpg" class="img img-bordered" style="width:200px" />
+                    <img id="photo" src="~/images/employees/@Model.Photo" class="img img-bordered" style="width:200px" />
                 </div>
             </div>
 
@@ -136,7 +143,7 @@
                             <img src="~/Images/Products/samsung.jpg" alt="" style="width:100px" />
                         </td>
                         <td style="vertical-align:middle;">
-                            LAPTOP SAMSUNG SERIES 9 NP900X4C i5 3337U 8GB SSD 128GB
+                            LAPTOP Meow SERIES 9 NP900X4C i5 3337U 8GB SSD 128GB
                         </td>
                         <td style="vertical-align:middle;">@i</td>
                         <td style="vertical-align:middle;"></td>
@@ -153,11 +160,9 @@
             </tbody>
         </table>
     </div>
-
 </div>
 
 <div class="box box-info">
-
     <div class="box-header with-border ">
         <h3 class="box-title">Thuộc tính của mặt hàng</h3>
         <div class="box-tools pull-right">
@@ -203,5 +208,4 @@
     </div>
     <div class="box-footer text-center">
     </div>
-
 </div>

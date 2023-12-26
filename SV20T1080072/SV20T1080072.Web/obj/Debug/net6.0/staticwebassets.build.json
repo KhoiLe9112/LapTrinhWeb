@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "0lFxmOS3oyFK1xwlzPbrXm28pGDtk5xD/sdCQJZpuPs=",
+  "Hash": "4IlxN9hQEVExfmBvNxUCxzSgGTdKyXQqhj2zQAMGHCk=",
   "Source": "SV20T1080072.Web",
   "BasePath": "_content/SV20T1080072.Web",
   "Mode": "Default",
@@ -202,6 +202,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\Images\\Employees\\638374887847429636_pikachu.jpg"
+    },
+    {
+      "Identity": "D:\\LapTrinhWeb\\SV20T1080072\\SV20T1080072.Web\\wwwroot\\Images\\Products\\default_avatar.png",
+      "SourceId": "SV20T1080072.Web",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\LapTrinhWeb\\SV20T1080072\\SV20T1080072.Web\\wwwroot\\",
+      "BasePath": "_content/SV20T1080072.Web",
+      "RelativePath": "Images/Products/default_avatar.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\Images\\Products\\default_avatar.png"
     },
     {
       "Identity": "D:\\LapTrinhWeb\\SV20T1080072\\SV20T1080072.Web\\wwwroot\\Images\\Products\\laptop_hp.jpg",

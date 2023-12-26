@@ -37,6 +37,10 @@
       "PackagePath": "staticwebassets\\Images\\Products\\Samsung.jpg"
     },
     {
+      "Id": "D:\\LapTrinhWeb\\SV20T1080072\\SV20T1080072.Web\\wwwroot\\Images\\Products\\default_avatar.png",
+      "PackagePath": "staticwebassets\\Images\\Products\\default_avatar.png"
+    },
+    {
       "Id": "D:\\LapTrinhWeb\\SV20T1080072\\SV20T1080072.Web\\wwwroot\\Images\\Products\\laptop_hp.jpg",
       "PackagePath": "staticwebassets\\Images\\Products\\laptop_hp.jpg"
     },

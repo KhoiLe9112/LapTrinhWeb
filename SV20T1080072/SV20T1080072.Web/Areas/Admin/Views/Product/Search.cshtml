@@ -4,8 +4,15 @@
 }
 
 <p style="margin:10px 0 10px 0">
-    Có <strong>@ViewBag.RowCount</strong> loại hàng. Hiện ở trang <strong>@ViewBag.Page</strong> trên tổng số <strong>@Math.Ceiling((double)ViewBag.RowCount/10)</strong> trang
+    Có <strong>@string.Format("{0:N0}", Model.RowCount)</strong> loại hàng. Hiện ở trang <strong>@string.Format("{0:N0}", Model.Page)</strong> trên tổng số <strong>@string.Format("{0:N0}", Model.PageCount)</strong> trang
 </p>
+
+@if (Model.RowCount == 0)
+{
+<div class="alert alert-warning">
+    <p>Không tìm thấy khách hàng</p>
+</div>
+}
 
 <div class="table-responsive">
     <table class="table table-bordered table-hover table-striped">
@@ -26,7 +33,7 @@
                         <img src="~/images/products/samsung.jpg" style="width:80px" />
                     </td>
                     <td style="vertical-align:middle">@item.ProductName</td>
-                    <td style="vertical-align:middle">@item.ProductDescription</td>
+                    <td style="vertical-align:middle">@item.Unit</td>
                     <td style="vertical-align:middle">@string.Format("{0:0,0}",item.Price)</td>
                     <td class="text-right" style="vertical-align:middle">
                         <a href="~/Admin/Product/Edit/@item.ProductId" class="btn btn-xs btn-flat btn-info">
@@ -103,57 +110,3 @@
         </ul>
     </div>
 }
-
-@* <div class="box-footer text-center">
-    <ul class="pagination">
-        @if (ViewBag.Page != 1)
-        {
-            int pageNumber = ViewBag.Page - 1;
-            <li class="paginate_button" id="example2_previous">
-                <a href="~/Admin/Product/Index/?page=@pageNumber">Previous</a>
-            </li>
-        }
-        @{
-            int _pageNext = ViewBag.TotalPage;
-            int _pagePrev = 1;
-            if (ViewBag.TotalPage >= 5)
-            {
-                _pageNext = ViewBag.Page + 2;
-                _pagePrev = ViewBag.Page - 2;
-                if (_pageNext > ViewBag.TotalPage)
-                {
-                    _pagePrev -= _pageNext - ViewBag.TotalPage;
-                    _pageNext = ViewBag.TotalPage;
-                }
-                else if (_pagePrev <= 0)
-                {
-                    _pageNext -= _pagePrev - 1;
-                    _pagePrev = 1;
-                }
-            }
-            for (int i = _pagePrev; i <= _pageNext; i++)
-            {
-                if (ViewBag.Page == i)
-                {
-                    <li class="paginate_button active">
-                        <a href="~/Admin/Product/Index/?page=@i">@i</a>
-                    </li>
-                }
-                else
-                {
-                    <li class="paginate_button">
-                        <a href="~/Admin/Product/Index/?page=@i">@i</a>
-                    </li>
-                }
-            }
-        }
-        @if (ViewBag.Page != ViewBag.TotalPage)
-        {
-            int pageNumber = ViewBag.Page + 1;
-            <li class="paginate_button next" id="example2_next">
-                <a href="~/Admin/Product/Index/?page=@pageNumber">Next</a>
-            </li>
-        }
-    </ul>
-</div> *@
-   

@@ -8,32 +8,32 @@
     <div class="box-header">
     </div>
     <div class="box-body">
-        <form action="#" method="get">
+        <form id="formSearchInput" action="~/Admin/Product/Search" method="get">
             <div class="row">
                 <div class="col-sm-3">
                     <div class="form-group">
-                        @Html.DropDownListFor(m => m.Categories, SelectListHelper.Categories(), new { @class="form-control", @name = "categories"})
+                        @Html.ValidationMessageFor(m => m.CategoryID,"", new {@style="color:#f00"})
+                        @Html.DropDownListFor(m => m.CategoryID, SelectListHelper.Categories(), new { @class="form-control", @name = "categories"})
                     </div>
                 </div>
                 <div class="col-sm-3">
                     <div class="form-group">
-                        @Html.DropDownListFor(m => m.Suppliers, SelectListHelper.Suppliers(), new { @class="form-control", @name = "suppliers"})
+                        @Html.ValidationMessageFor(m => m.SupplierID,"", new {@style="color:#f00"})
+                        @Html.DropDownListFor(m => m.SupplierID, SelectListHelper.Suppliers(), new { @class="form-control", @name = "suppliers"})
                     </div>
                 </div>
-                <form id="formSearchInput" action="~/Admin/Product/Search" method="get">
-                    @Html.HiddenFor(m => m.PageSize)
-                    <div class="input-group">
-                        <input type="text" name="searchValue" class="form-control" placeholder="Nhập tên mặt hàng cần tìm" spellcheck="false" data-ms-editor="true" value="@Model.SearchValue">
-                        <span class="input-group-btn">
-                            <button type="submit" name="searchValue" id="search-btn" class="btn btn-flat">
-                                <i class="fa fa-search"></i>
-                            </button>
-                            <a href="~/Admin/Product/Create" class="btn btn-flat btn-primary">
-                                <i class="fa fa-plus"></i> Bổ sung
-                            </a>
-                        </span>
-                    </div>
-                </form>
+                @Html.HiddenFor(m => m.PageSize)
+                <div class="input-group">
+                    <input type="text" name="searchValue" class="form-control" placeholder="Nhập tên mặt hàng cần tìm" spellcheck="false" data-ms-editor="true" value="@Model.SearchValue">
+                    <span class="input-group-btn">
+                        <button type="submit" name="searchValue" id="search-btn" class="btn btn-flat">
+                            <i class="fa fa-search"></i>
+                        </button>
+                        <a href="~/Admin/Product/Create" class="btn btn-flat btn-primary">
+                            <i class="fa fa-plus"></i> Bổ sung
+                        </a>
+                    </span>
+                </div>
             </div>
         </form>
     </div>
@@ -56,12 +56,13 @@
         });
         function doSearch(page) {
             var url = $("#formSearchInput").prop("action");
+            var type = $("#formSearchInput").prop("method");
             var postData = $("#formSearchInput").serializeArray();
             postData.push({ "name": "page", "value": page });
 
             $.ajax({
                 url: url,
-                type: "POST",
+                type: type,
                 data: postData,
                 error: function () {
                     alert("Your request is not valid!");
