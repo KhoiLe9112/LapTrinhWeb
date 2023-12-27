@@ -1,9 +1,17 @@
-﻿@model SV20T1080072.Web.Models.PaginationSearchInput
+﻿@using SV20T1080072.Web;
+@model SV20T1080072.Web.Models.PaginationSearchInput
 @{
 	ViewBag.Title = "Lập đơn hàng";
 }
 
 <div class="box box-primary">
+	@* @if (!string.IsNullOrWhiteSpace(errorMessage))
+	{
+		<div class="alert alert-danger alert-dismissible">
+			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+			<strong>Lỗi!</strong> @errorMessage
+		</div>
+	} *@
 	<div class="box-body">
 
 		<!-- Tìm kiếm, hiển thị và chọn hàng đưa vào giỏ -->
@@ -38,21 +46,43 @@
 				</a>
 			</div>
 
+			@if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+			{
+				<div class="alert alert-warning">
+					<p>@ViewBag.ErrorMessage</p>
+				</div>
+			}
+
 			<!-- Nhập khách hàng, nhân viên phụ trách và khởi tạo đơn hàng -->
 			<form action="~/Admin/Order/Init" method="post">
 				<h4>Nhập thông tin về khách hàng và nhân viên phụ trách đơn hàng</h4>
 				<div class="form-group">
-					
-					<div class="col-md-6">
-						<label>Nhân viên phụ trách:</label>
-						<select class="form-control" name="employeeID">
-							<option value="0">-- Chọn nhân viên --</option>
-							<option value="1">Nguyễn Thị Trà My</option>
-							<option value="2">Lê Trần Thanh Nhi</option>
-							<option value="3">Hoàng Ngọc Hải Châu</option>
-						</select>
+					<label class="control-label col-sm-2">Nhân viên:</label>
+					<div class="col-sm-10">
+						@Html.DropDownListFor(m => m.employeeID, SelectListHelper.Employee(), new { @class="form-control"})
+						@Html.ValidationMessageFor(m => m.employeeID,"", new {@style="color:#f00"})
+
 					</div>
 				</div>
+
+				@* <div class="form-group">
+					<label class="control-label col-sm-2">Giao hàng:</label>
+					<div class="col-sm-10">
+						@Html.DropDownListFor(m => m.shipperID, SelectListHelper.Shipper(), new { @class="form-control"})
+						@Html.ValidationMessageFor(m => m.shipperID,"", new {@style="color:#f00"})
+
+					</div>
+				</div> *@
+				<div class="form-group">
+					<label class="control-label col-sm-2">Khách hàng:</label>
+					<div class="col-sm-10">
+						@Html.DropDownListFor(m => m.customerID, SelectListHelper.Customer(), new { @class="form-control"})
+						@Html.ValidationMessageFor(m => m.customerID,"", new {@style="color:#f00"})
+
+					</div>
+				</div>
+
+				<div class="form-group" style="margin-top:20px"></div>
 				<div class="form-group">
 					<div class="col-md-12 text-right">
 						<button type="submit" class="btn btn-sm btn-primary">Lập đơn hàng</button>

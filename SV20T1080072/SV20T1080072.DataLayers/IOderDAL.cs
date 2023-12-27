@@ -17,7 +17,7 @@ namespace SV20T1080072.DataLayers
         /// <param name="shipperID">Mã người giao hàng cần tìm (0 nếu không tìm người giao hàng)</param>
         /// <param name="status">Trạng thái đơn hàng cần tìm</param>
         /// <returns></returns>
-        IList<Order> List(int page = 1, int pageSize = 0, string searchValue = "", int customerID = 0, int shipperID = 0, int status = 1);
+        IList<Order> List(int page = 1, int pageSize = 0, string searchValue = "", int status = 0);
 
         /// <summary>
         /// Đếm số lượng đơn hàng tìm kiếm được
@@ -62,6 +62,7 @@ namespace SV20T1080072.DataLayers
         /// <param name="orderID"></param>
         /// <returns></returns>
         IList<OrderDetail> ListDetails(int orderID);
+        
         /// <summary>
         /// Lấy thông tin của 1 mặt hàng được bán trong đơn hàng (1 chi tiết trong đơn hàng)
         /// </summary>
@@ -69,6 +70,7 @@ namespace SV20T1080072.DataLayers
         /// <param name="productID"></param>
         /// <returns></returns>
         OrderDetail GetDetail(int orderID, int productID);
+        
         /// <summary>
         /// Lưu thông tin chi tiết của đơn hàng (thêm mặt hàng được bán trong đơn hàng) theo nguyên tắc:
         /// - Nếu mặt hàng chưa có trong chi tiết đơn hàng thì bổ sung
@@ -77,6 +79,7 @@ namespace SV20T1080072.DataLayers
         /// </summary>        
         /// <returns></returns>
         int SaveDetail(int orderID, int productID, int quantity, decimal salePrice);
+        
         /// <summary>
         /// Xóa chi tiết của đơn hàng
         /// </summary>

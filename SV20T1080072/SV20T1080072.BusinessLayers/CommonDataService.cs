@@ -330,5 +330,11 @@ namespace SV20T1080072.BusinessLayers
 			//rowCount = productDB.Count();
 			return employeeDB.List().ToList();
 		}
+
+		public static List<Shipper> ListOfShipperNames()
+		{
+			//rowCount = productDB.Count();
+			return shipperDB.List().ToList();
+		}
 	}
 }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SV20T1080072.BusinessLayer;
 using SV20T1080072.BusinessLayers;
 using SV20T1080072.DomainModels;
 using SV20T1080072.Web.Models;
@@ -12,21 +13,64 @@ namespace SV20T1080072.Web.Areas.Admin.Controllers
 	public class EmployeeController : Controller
 	{
 		private const int PAGE_SIZE = 6;
-		public IActionResult Index(int page = 1, string searchValue = "")
+		private const string EMPLOYEE_SEARCH = "Employee_Search";
+		//public IActionResult Index(int page = 1, string searchValue = "")
+		//{
+		//	int rowCount = 0;
+		//	var data = CommonDataService.ListOfEmployees(out rowCount, page, PAGE_SIZE, searchValue ?? "");
+		//	var model = new PaginationSearchEmployee()
+		//	{
+		//		Page = page,
+		//		PageSize = PAGE_SIZE,
+		//		SearchValue = searchValue ?? "",
+		//		RowCount = rowCount,
+		//		Data = data
+		//	};
+
+		//	string? errorMessage = Convert.ToString(TempData["ErrorMessage"]);
+		//	ViewBag.ErrorMessage = errorMessage;
+
+		//	return View(model);
+		//}
+
+		public IActionResult Index()
+		{
+
+			var input = ApplicationContext.GetSessionData<PaginationSearchEmployee>(EMPLOYEE_SEARCH);
+			if (input == null)
+			{
+				input = new PaginationSearchEmployee()
+				{
+					Page = 1,
+					PageSize = PAGE_SIZE,
+					SearchValue = "",
+				};
+			}
+			return View(input);
+		}
+
+		public IActionResult Search(PaginationSearchInput input)
 		{
 			int rowCount = 0;
-			var data = CommonDataService.ListOfEmployees(out rowCount, page, PAGE_SIZE, searchValue ?? "");
+			var data = CommonDataService.ListOfEmployees(out rowCount, input.Page, input.PageSize, input.SearchValue ?? "");
 			var model = new PaginationSearchEmployee()
 			{
-				Page = page,
-				PageSize = PAGE_SIZE,
-				SearchValue = searchValue ?? "",
+				Page = input.Page,
+				PageSize = input.PageSize,
+				SearchValue = input.SearchValue ?? "",
 				RowCount = rowCount,
 				Data = data
 			};
 
-			string? errorMessage = Convert.ToString(TempData["ErrorMessage"]);
+			//Lưu lại điều kiện tìm kiếm
+			ApplicationContext.SetSessionData(EMPLOYEE_SEARCH, input);
+
+			string errorMessage = Convert.ToString(TempData["ErrorMessage"]);
 			ViewBag.ErrorMessage = errorMessage;
+			string deletedMessage = Convert.ToString(TempData["DeletedMessage"]);
+			ViewBag.DeletedMessage = deletedMessage;
+			string savedMessage = Convert.ToString(TempData["SavedMessage"]);
+			ViewBag.SavedMessage = savedMessage;
 
 			return View(model);
 		}

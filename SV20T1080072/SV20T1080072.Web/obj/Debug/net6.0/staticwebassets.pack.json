@@ -33,6 +33,10 @@
       "PackagePath": "staticwebassets\\Images\\Employees\\638374887847429636_pikachu.jpg"
     },
     {
+      "Id": "D:\\LapTrinhWeb\\SV20T1080072\\SV20T1080072.Web\\wwwroot\\Images\\Employees\\638392857984481838_niggachu.jpg",
+      "PackagePath": "staticwebassets\\Images\\Employees\\638392857984481838_niggachu.jpg"
+    },
+    {
       "Id": "D:\\LapTrinhWeb\\SV20T1080072\\SV20T1080072.Web\\wwwroot\\Images\\Products\\Samsung.jpg",
       "PackagePath": "staticwebassets\\Images\\Products\\Samsung.jpg"
     },
@@ -43,6 +47,10 @@
     {
       "Id": "D:\\LapTrinhWeb\\SV20T1080072\\SV20T1080072.Web\\wwwroot\\Images\\Products\\laptop_hp.jpg",
       "PackagePath": "staticwebassets\\Images\\Products\\laptop_hp.jpg"
+    },
+    {
+      "Id": "D:\\LapTrinhWeb\\SV20T1080072\\SV20T1080072.Web\\wwwroot\\Images\\Products\\niggachu.jpg",
+      "PackagePath": "staticwebassets\\Images\\Products\\niggachu.jpg"
     },
     {
       "Id": "D:\\LapTrinhWeb\\SV20T1080072\\SV20T1080072.Web\\wwwroot\\css\\site.css",

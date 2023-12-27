@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using Microsoft.Data.SqlClient;
 using SV20T1080072.DomainModels;
 using System;
 using System.Collections.Generic;
@@ -16,161 +17,403 @@ namespace SV20T1080072.DataLayers.SQLServer
 		}
 
         /// <summary>
-        /// Chuyển dữ liệu từ SqlDataReader thành Order
+        /// Chuyển đổi dữ liệu để đọc dữ liệu từ sql sang Order
         /// </summary>
         /// <param name="dbReader"></param>
         /// <returns></returns>
-        //private Order DataRowToOrder(DataRow dataRow)
-        //{
-        //    return new Order()
-        //    {
-        //        OrderID = Convert.ToInt32(dataRow["OrderID"]),
-        //        OrderTime = Convert.ToDateTime(dataRow["OrderTime"]),
-        //        AcceptTime = DBValueToNullableDateTime(dataRow["AcceptTime"]),
-        //        ShippedTime = DBValueToNullableDateTime(dataRow["ShippedTime"]),
-        //        FinishedTime = DBValueToNullableDateTime(dataRow["FinishedTime"]),
-        //        Status = Convert.ToInt32(dataRow["Status"]),
-        //        CustomerID = DBValueToNullableInt(dataRow["CustomerID"]),
-        //        CustomerName = dataRow["CustomerName"].ToString(),
-        //        CustomerContactName = dataRow["CustomerContactName"].ToString(),
-        //        CustomerAddress = dataRow["CustomerAddress"].ToString(),
-        //        CustomerEmail = dataRow["CustomerEmail"].ToString(),
+		private Order DataReaderToOrder(SqlDataReader dbReader)
+        {
+            return new Order()
+            {
+                OrderID = Convert.ToInt32(dbReader["OrderID"]),
+                OrderTime = Convert.ToDateTime(dbReader["OrderTime"]),
+                AcceptTime = (dbReader["AcceptTime"] is DBNull ? (DateTime?)null : Convert.ToDateTime(dbReader["AcceptTime"])),
+                ShippedTime = (dbReader["ShippedTime"] is DBNull ? (DateTime?)null : Convert.ToDateTime(dbReader["ShippedTime"])),
+                FinishedTime = (dbReader["FinishedTime"] is DBNull ? (DateTime?)null : Convert.ToDateTime(dbReader["FinishedTime"])),
+                Status = Convert.ToInt32(dbReader["Status"]),
+                CustomerID = (dbReader["CustomerID"] is DBNull ? (int?)null : Convert.ToInt32(dbReader["CustomerID"])),
+                CustomerName = dbReader["CustomerName"].ToString(),
+                CustomerContactName = dbReader["CustomerContactName"].ToString(),
+                CustomerAddress = dbReader["CustomerAddress"].ToString(),
+                CustomerEmail = dbReader["CustomerEmail"].ToString(),
 
-        //        EmployeeID = DBValueToNullableInt(dataRow["EmployeeID"]),
-        //        EmployeeFullName = $"{dataRow["EmployeeFirstName"]} {dataRow["EmployeeLastName"]}",
+                EmployeeID = (dbReader["EmployeeID"] is DBNull ? (int?)null : Convert.ToInt32(dbReader["EmployeeID"])),
+                EmployeeFullName = dbReader["EmployeeFullName"].ToString(),
 
-        //        ShipperID = DBValueToNullableInt(dataRow["ShipperID"]),
-        //        ShipperName = dataRow["ShipperName"].ToString(),
-        //        ShipperPhone = dataRow["ShipperPhone"].ToString()
-        //    };
-        //}
+                ShipperID = (dbReader["ShipperID"] is DBNull ? (int?)null : Convert.ToInt32(dbReader["ShipperID"])),
+                ShipperName = dbReader["ShipperName"].ToString(),
+                ShipperPhone = dbReader["ShipperPhone"].ToString()
+            };
+        }
 
-        public int Add(Order data)
-		{
-			int id = 0;
-			using (var connection = OpenConnection())
-			{
-				var sql = @"
-                            insert into Orders(CustomerID,OrderTime,DeliveryProvince,DeliveryAddress,EmployeeID,AcceptTime,ShipperID,ShippedTime,FinishedTime,Status)
-                            values(@CustomerID,@OrderTime,@DeliveryProvince,@DeliveryAddress,@EmployeeID,@AcceptTime,@ShipperID,@ShippedTime,@FinishedTime,@Status);
-                            select @@identity;
-						";
-				var parameters = new
-				{
-					customerId = data.CustomerID,
-					orderTime = data.OrderTime,
-					deliveryProvince = data.DeliveryProvince ?? "",
-					deliveryAddress = data.DeliveryAddress ?? "",
-					employeeId = data.EmployeeID,
-					acceptTime = data.AcceptTime,
-					shipperId = data.ShipperID,
-					shippedTime = data.ShippedTime,
-					finishedTime = data.FinishedTime,
-					status = data.Status
-				};
-				id = connection.ExecuteScalar<int>(sql: sql, param: parameters, commandType: CommandType.Text);
-				connection.Close();
-			}
-			return id;
-		}
+        /// <summary>
+        /// Chuyển đổi dữ liệu để đọc dữ liệu từ sql sang OrderDetail
+        /// </summary>
+        /// <param name="dbReader"></param>
+        /// <returns></returns>
+        private OrderDetail DataReaderToOrderDetail(SqlDataReader dbReader)
+        {
+            return new OrderDetail()
+            {
+                //OrderDetailID = Convert.ToInt32(dbReader["OrderDetailID"]),
+                OrderID = Convert.ToInt32(dbReader["OrderID"]),
+                ProductID = Convert.ToInt32(dbReader["ProductID"]),
+                ProductName = Convert.ToString(dbReader["ProductName"]),
+                Unit = Convert.ToString(dbReader["Unit"]),
+                Photo = Convert.ToString(dbReader["Photo"]),
+                Quantity = Convert.ToInt32(dbReader["Quantity"]),
+                SalePrice = Convert.ToDecimal(dbReader["SalePrice"])
+            };
+        }
 
         public int Add(Order data, IEnumerable<OrderDetail> details)
         {
-            throw new NotImplementedException();
+            int id = 0;
+            using (var connection = OpenConnection())
+            {
+                //Tạo mới đơn hàng
+                var sqlAddOrder = @"
+                    
+                           INSERT INTO Orders(CustomerID, OrderTime, EmployeeID, AcceptTime, ShipperID, ShippedTime, FinishedTime, Status)
+                                        VALUES(@customerID, @orderTime, @employeeID, @acceptTime, @shipperID, @shippedTime, @finishedTime, @status);
+                                        SELECT @@identity;
+                        ";
+                var orderParameters = new
+                {
+                    customerID = data.CustomerID,
+                    orderTime = data.OrderTime,
+                    employeeID = data.EmployeeID,
+                    acceptTime = data.AcceptTime,
+                    shipperID = data.ShipperID,
+                    shippedTime = data.ShippedTime,
+                    finishedTime = data.FinishedTime,
+                    status = data.Status,
+                };
+                id = connection.ExecuteScalar<int>(sql: sqlAddOrder, param: orderParameters, commandType: CommandType.Text);
+
+                //Thêm các mặt hàng vào OrderDetail có OrderID = id
+                var sqlAddOrderDetail = @"
+                           INSERT INTO OrderDetails(OrderID, ProductID, Quantity, SalePrice) 
+                                        VALUES(@orderID, @productID, @quantity, @salePrice);
+                        ";
+
+                foreach (var item in details)
+                {
+                    var orderDetailsparameters = new
+                    {
+                        orderID = id,
+                        productID = item.ProductID,
+                        quantity = item.Quantity,
+                        salePrice = item.SalePrice,
+                    };
+                    connection.Execute(sqlAddOrderDetail, orderDetailsparameters);
+                }
+                connection.Close();
+            };
+            return id;
         }
 
-        public int Count(string searchValue = "", int status = 1)
-		{
-			int count = 0;
-			if (!string.IsNullOrEmpty(searchValue))
-				searchValue = "%" + searchValue + "%";
-			using (var connection = OpenConnection())
-			{
-				var sql = @"select count(*) from Orders
-                            where (@searchValue = N'') or (CustomerName like @searchValue) or (ShipperName like @searchValue)";
-				var parameter = new
-				{
-					searchValue,
-				};
-				count = connection.ExecuteScalar<int>(sql: sql, param: parameter, commandType: CommandType.Text);
-				connection.Close();
-			}
-			return count;
-		}
+        public int Count(string searchValue = "", int status = 0)
+        {
+            int count = 0;
+            if (!string.IsNullOrEmpty(searchValue))
+                searchValue = "%" + searchValue + "%";
 
-		public bool Delete(int orderID)
-		{
-			throw new NotImplementedException();
-		}
+            using (var connection = OpenConnection())
+            {
+                var sql = @"SELECT  COUNT(*)
+                                    FROM    Orders as o
+                                            LEFT JOIN Customers AS c ON o.CustomerID = c.CustomerID
+                                            LEFT JOIN Employees AS e ON o.EmployeeID = e.EmployeeID
+                                            LEFT JOIN Shippers AS s ON o.ShipperID = s.ShipperID
+                                    WHERE   (@status = 0 OR o.Status = @status)
+                                        AND (@searchValue = N'' OR c.CustomerName LIKE @searchValue OR s.ShipperName LIKE @searchValue)";
+
+                var parameters = new
+                {
+                    searchValue = searchValue,
+                    Status = status,
+                };
+
+                count = connection.ExecuteScalar<int>(sql: sql, param: parameters, commandType: CommandType.Text);
+                connection.Close();
+            }
+
+            return count;
+        }
+
+        public bool Delete(int orderID)
+        {
+            bool result = false;
+            using (var connection = OpenConnection())
+            {
+                var sql = "DELETE FROM OrderDetails WHERE OrderID = @orderID;                                    " +
+                            "DELETE FROM Orders WHERE OrderID = @orderID;";
+                var parameters = new { orderID = orderID };
+                result = connection.Execute(sql: sql, param: parameters, commandType: CommandType.Text) > 0;
+                connection.Close();
+            }
+            return result;
+        }
 
         public bool DeleteDetail(int orderID, int productID)
         {
-            throw new NotImplementedException();
+            bool result = false;
+            using (var connection = OpenConnection())
+            {
+                var sql = "DELETE FROM OrderDetails WHERE OrderID = @orderID AND ProductID = @productID";
+                var parameters = new
+                {
+                    orderID = orderID,
+                    productID = productID
+                };
+                result = connection.Execute(sql: sql, param: parameters, commandType: CommandType.Text) > 0;
+                connection.Close();
+            }
+            return result;
         }
 
-        public Order? Get(int orderID)
-		{
-			Order? data = null;
-			using (var connection = OpenConnection())
-			{
-				var sql = "select * from Orders where OrderID = @orderId";
-				var parameters = new { orderId = orderID };
-				data = connection.QueryFirstOrDefault<Order>(sql: sql, param: parameters, commandType: CommandType.Text);
-				connection.Close();
-			}
-			return data;
-		}
+        public Order Get(int orderID)
+        {
+            Order? data = null;
+            using (var connection = OpenConnection())
+            {
+                var sql = @"SELECT  o.*,
+                            c.CustomerName,
+                            c.ContactName as CustomerContactName,
+                            c.Address as CustomerAddress, 
+                            c.Email as CustomerEmail,
+                            e.FullName as EmployeeFullName,
+                            s.ShipperName,
+                            s.Phone as ShipperPhone
+                    FROM Orders as o
+                    LEFT JOIN Customers AS c ON o.CustomerID = c.CustomerID
+                    LEFT JOIN Employees AS e ON o.EmployeeID = e.EmployeeID
+                    LEFT JOIN Shippers AS s ON o.ShipperID = s.ShipperID
+                    WHERE o.OrderID = @OrderID";
+
+                var parameters = new
+                {
+                    OrderID = orderID
+                };
+
+                using (var cmd = new SqlCommand(sql, (SqlConnection)connection))
+                {
+                    foreach (var prop in parameters.GetType().GetProperties())
+                    {
+                        cmd.Parameters.AddWithValue("@" + prop.Name, prop.GetValue(parameters, null) ?? DBNull.Value);
+                    }
+
+                    using (var dbReader = cmd.ExecuteReader(CommandBehavior.CloseConnection))
+                    {
+                        if (dbReader.Read())
+                        {
+                            data = DataReaderToOrder(dbReader);
+                        }
+                    }
+                }
+                connection.Close();
+            }
+            return data;
+        }
 
         public OrderDetail GetDetail(int orderID, int productID)
         {
-            throw new NotImplementedException();
+            OrderDetail? data = null;
+            using (var connection = OpenConnection())
+            {
+                var sql = @"SELECT	od.*, p.ProductName, p.Unit, p.Photo		
+                                    FROM	OrderDetails AS od
+		                                    JOIN Products AS p ON od.ProductID = p.ProductID
+                                    WHERE	od.OrderID = @orderID AND od.ProductID = @productID";
+                var parameters = new
+                {
+                    orderID = orderID,
+                    productID = productID
+                };
+                using (var cmd = new SqlCommand(sql, (SqlConnection)connection))
+                {
+                    foreach (var prop in parameters.GetType().GetProperties())
+                    {
+                        cmd.Parameters.AddWithValue("@" + prop.Name, prop.GetValue(parameters, null) ?? DBNull.Value);
+                    }
+
+                    connection.Open();
+                    using (var dbReader = cmd.ExecuteReader(CommandBehavior.CloseConnection))
+                    {
+                        if (dbReader.Read())
+                        {
+                            data = DataReaderToOrderDetail(dbReader);
+                        }
+                    }
+                }
+                connection.Close();
+            }
+            return data;
         }
 
-        public IList<Order> List(int page = 1, int pageSize = 0, string searchValue = "", int customerID = 0, int shipperID = 0, int status = 1)
-		{
-			List<Order> data = new List<Order>();
-			if (!string.IsNullOrEmpty(searchValue))
-				searchValue = "%" + searchValue + "%";
-			using (var connection = OpenConnection())
-			{
-				var sql = @"with cte as
-                            (
-	                            select *, ROW_NUMBER() over (order by CustomerName) as RowNumber
-	                            from Customers
-	                            where (@searchValue = N'' or (CustomerName like @searchValue))
-                            )
-                            select * from cte
-                            where (@pageSize = 0)
-	                            or (RowNumber between (@page - 1) * @pageSize + 1 and @page * @pageSize)
-                            order by RowNumber";
+        public IList<Order> List(int page = 1, int pageSize = 0, string searchValue = "", int status = 0)
+        {
+            List<Order> data = new List<Order>();
+            if (!string.IsNullOrEmpty(searchValue))
+                searchValue = "%" + searchValue + "%";
 
-				var parameters = new
-				{
-					page,   //nếu trùng tên
-					pageSize = pageSize,
-					searchValue = searchValue
-				};
-				data = (connection.Query<Order>(sql: sql, param: parameters, commandType: CommandType.Text)).ToList();
-				connection.Close();
-			}
-			if (data == null)
-				data = new List<Order>();
-			return data;
-		}
+            using (var connection = OpenConnection())
+            {
+                var sql = @"SELECT  *
+             FROM    (
+                     SELECT  o.*,
+                             c.CustomerName,
+                             c.ContactName as CustomerContactName,
+                             c.Address as CustomerAddress,
+                             c.Email as CustomerEmail,
+                             e.FullName as EmployeeFullName,
+                             s.ShipperName,
+                             s.Phone as ShipperPhone,
+                             ROW_NUMBER() OVER(ORDER BY o.OrderID DESC) AS RowNumber
+                     FROM    Orders as o
+                             LEFT JOIN Customers AS c ON o.CustomerID = c.CustomerID
+                             LEFT JOIN Employees AS e ON o.EmployeeID = e.EmployeeID
+                             LEFT JOIN Shippers AS s ON o.ShipperID = s.ShipperID
+                     WHERE   (@status = 0 OR o.Status = @status)
+                         AND (@searchValue = N'' OR c.CustomerName LIKE @searchValue OR s.ShipperName LIKE @searchValue)
+                     ) AS t
+             WHERE (@pageSize = 0) OR (t.RowNumber BETWEEN(@page -1)*@pageSize + 1 AND @page*@pageSize)
+             ORDER BY t.RowNumber";
+
+                var parameters = new
+                {
+                    page = page,
+                    pageSize = pageSize,
+                    searchValue = searchValue,
+                    status = status
+                };
+
+                using (var cmd = connection.CreateCommand())
+                {
+                    cmd.CommandText = sql;
+                    cmd.CommandType = CommandType.Text;
+
+                    foreach (var prop in parameters.GetType().GetProperties())
+                    {
+                        cmd.Parameters.AddWithValue("@" + prop.Name, prop.GetValue(parameters, null) ?? DBNull.Value);
+                    }
+
+                    using (var dbReader = cmd.ExecuteReader(CommandBehavior.CloseConnection))
+                    {
+                        while (dbReader.Read())
+                        {
+                            data.Add(DataReaderToOrder(dbReader));
+                        }
+                    }
+                }
+                connection.Close();
+            }
+            return data;
+        }
 
         public IList<OrderDetail> ListDetails(int orderID)
         {
-            throw new NotImplementedException();
+            List<OrderDetail> data = new List<OrderDetail>();
+            using (var connection = OpenConnection())
+            {
+                var sql = @"SELECT	od.*, p.ProductName, p.Unit, p.Photo		
+                                    FROM	OrderDetails AS od
+		                                    JOIN Products AS p ON od.ProductID = p.ProductID
+                                    WHERE	od.OrderID = @orderID";
+                var parameters = new
+                {
+                    orderID = orderID
+                };
+                using (var cmd = connection.CreateCommand())
+                {
+                    cmd.CommandText = sql;
+                    cmd.CommandType = CommandType.Text;
+
+                    foreach (var prop in parameters.GetType().GetProperties())
+                    {
+                        cmd.Parameters.AddWithValue("@" + prop.Name, prop.GetValue(parameters, null) ?? DBNull.Value);
+                    }
+
+                    using (var dbReader = cmd.ExecuteReader(CommandBehavior.CloseConnection))
+                    {
+                        while (dbReader.Read())
+                        {
+                            data.Add(DataReaderToOrderDetail(dbReader));
+                        }
+                    }
+                }
+
+                connection.Close();
+            }
+            return data;
         }
 
         public int SaveDetail(int orderID, int productID, int quantity, decimal salePrice)
         {
-            throw new NotImplementedException();
+            int result = 0;
+            using (var connection = OpenConnection())
+            {
+                var sql = @"DECLARE @orderDetailID int;
+                                    SELECT @orderDetailID = OrderDetailID FROM OrderDetails WHERE OrderID = @orderID AND ProductID = @productID;
+                                    IF(@orderDetailID IS NULL)
+                                        BEGIN
+                                            INSERT INTO OrderDetails(OrderID, ProductID, Quantity, SalePrice)
+                                            VALUES(@orderID, @productID, @quantity, @salePrice);
+                                            SELECT SCOPE_IDENTITY();
+                                        END
+                                    ELSE
+                                        BEGIN
+                                            UPDATE OrderDetails SET Quantity = @quantity, SalePrice = @salePrice
+                                            WHERE OrderDetailID = @orderDetailID;
+                                            SELECT @orderDetailID;
+                                        END";
+
+                var parameters = new
+                {
+                    orderID = orderID,
+                    productID = productID,
+                    quantity = quantity,
+                    salePrice = salePrice
+                };
+
+                result = connection.ExecuteScalar<int>(sql: sql, param: parameters, commandType: CommandType.Text);
+            }
+            return result;
         }
 
         public bool Update(Order data)
-		{
-			throw new NotImplementedException();
-		}
-	}
+        {
+            bool result = false;
+            using (var connection = OpenConnection())
+            {
+                var sql = @"UPDATE Orders
+                                    SET     CustomerID = @customerID,
+                                            OrderTime = @orderTime,
+                                            EmployeeID = @employeeID,
+                                            AcceptTime = @acceptTime,
+                                            ShipperID = @shipperID,
+                                            ShippedTime = @shippedTime,
+                                            FinishedTime = @finishedTime,
+                                            Status = @status
+                                    WHERE   OrderID = @orderID";
+
+                var parameters = new
+                {
+                    orderID = data.OrderID,
+                    customerID = data.CustomerID,
+                    orderTime = data.OrderTime,
+                    employeeID = data.EmployeeID,
+                    acceptTime = data.AcceptTime,
+                    shipperID = data.ShipperID,
+                    shippedTime = data.ShippedTime,
+                    finishedTime = data.FinishedTime,
+                    status = data.Status
+                };
+
+                result = connection.Execute(sql, parameters, commandType: CommandType.Text) > 0;
+            }
+            return result;
+        }
+    }
 }

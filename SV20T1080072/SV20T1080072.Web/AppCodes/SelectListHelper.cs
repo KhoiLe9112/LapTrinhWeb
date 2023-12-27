@@ -68,16 +68,16 @@ namespace SV20T1080072.Web
 			list.Add(new SelectListItem()
 			{
 				Value = "",
-				Text = "-- Chọn khách hàng --"
+				Text = "--Khách hàng --"
 			});
-
 			foreach (var item in CommonDataService.ListOfCustomerNames())
+			{
 				list.Add(new SelectListItem()
 				{
-					Value = item.CustomerName,
+					Value = item.CustomerID.ToString(),
 					Text = item.CustomerName
 				});
-
+			}
 			return list;
 		}
 
@@ -93,8 +93,27 @@ namespace SV20T1080072.Web
 			foreach (var item in CommonDataService.ListOfEmployeeNames())
 				list.Add(new SelectListItem()
 				{
-					Value = item.FullName,
+					Value = item.EmployeeID.ToString(),
 					Text = item.FullName
+				});
+
+			return list;
+		}
+
+		public static List<SelectListItem> Shipper()
+		{
+			List<SelectListItem> list = new List<SelectListItem>();
+			list.Add(new SelectListItem()
+			{
+				Value = "",
+				Text = "-- Chọn giao hàng --"
+			});
+
+			foreach (var item in CommonDataService.ListOfShipperNames())
+				list.Add(new SelectListItem()
+				{
+					Value = item.ShipperID.ToString(),
+					Text = item.ShipperName
 				});
 
 			return list;

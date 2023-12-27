@@ -12,5 +12,9 @@ namespace SV20T1080072.Web.Models
 		public string SearchValue { get; set; } = "";
 		public int CategoryID { get; set; } = 0;
 		public int SupplierID { get; set; } = 0;
+        public int Status { get; set; }
+		public int customerID { get; set; }
+		public int shipperID { get; set; }
+		public int employeeID { get; set; }
 	}
 }
